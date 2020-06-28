@@ -1,9 +1,9 @@
 use std::sync::mpsc::Sender;
 
 use crate::event::{Action, Key, MouseButton, WindowEvent};
-#[cfg(not(any(target_arch = "wasm32", target_arch = "asmjs")))]
+#[cfg(not(target_arch = "wasm32"))]
 use crate::window::GLCanvas as CanvasImpl;
-#[cfg(any(target_arch = "wasm32", target_arch = "asmjs"))]
+#[cfg(target_arch = "wasm32")]
 use crate::window::WebGLCanvas as CanvasImpl;
 use image::{GenericImage, Pixel};
 
