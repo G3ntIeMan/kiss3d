@@ -41,8 +41,11 @@ impl NumSamples {
 }
 
 #[derive(Debug, Copy, Clone, Serialize, Deserialize, PartialEq, Eq)]
+/// Canvas options.
 pub struct CanvasSetup {
+    /// Is vsync enabled?
     pub vsync: bool,
+    /// Number of AA sambles.
     pub samples: NumSamples,
 }
 
