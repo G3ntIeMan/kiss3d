@@ -16,22 +16,24 @@ use na::{Point2, Point3, Vector2, Vector3};
 use crate::camera::{ArcBall, Camera};
 use crate::context::Context;
 use crate::event::{Action, EventManager, Key, WindowEvent};
-use image::imageops;
-use image::{GenericImage, Pixel};
-use image::{ImageBuffer, Rgb};
 use crate::light::Light;
-use ncollide3d::procedural::TriMesh;
 use crate::planar_camera::{FixedView, PlanarCamera};
 use crate::planar_line_renderer::PlanarLineRenderer;
 use crate::post_processing::PostProcessingEffect;
 #[cfg(feature = "conrod")]
 use crate::renderer::ConrodRenderer;
-use crate::renderer::{LineRenderer, PointRenderer, Renderer, PlanarRenderer};
-use crate::resource::{FramebufferManager, Mesh, PlanarMesh, RenderTarget, Texture, TextureManager};
+use crate::renderer::{LineRenderer, PlanarRenderer, PointRenderer, Renderer};
+use crate::resource::{
+    FramebufferManager, Mesh, PlanarMesh, RenderTarget, Texture, TextureManager,
+};
 use crate::scene::{PlanarSceneNode, SceneNode};
 use crate::text::{Font, TextRenderer};
 use crate::window::canvas::CanvasSetup;
 use crate::window::{Canvas, State};
+use image::imageops;
+use image::{GenericImage, Pixel};
+use image::{ImageBuffer, Rgb};
+use ncollide3d::procedural::TriMesh;
 
 #[cfg(feature = "conrod")]
 use std::collections::HashMap;

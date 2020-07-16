@@ -2,9 +2,9 @@
 
 use crate::camera::Camera;
 use crate::context::Context;
-use na::{Matrix4, Point3};
 use crate::renderer::Renderer;
 use crate::resource::{AllocationType, BufferType, Effect, GPUVec, ShaderAttribute, ShaderUniform};
+use na::{Matrix4, Point3};
 
 #[path = "../error.rs"]
 mod error;
@@ -85,7 +85,7 @@ impl PersistentPointRenderer {
             view: shader.get_uniform::<Matrix4<f32>>("view").unwrap(),
             shader,
             point_size: 1.0,
-            visible: true
+            visible: true,
         }
     }
 
@@ -107,12 +107,12 @@ impl PersistentPointRenderer {
     }
 
     /// Prevent this renderer from showing any points
-    pub fn hide(&mut self){
+    pub fn hide(&mut self) {
         self.visible = false
     }
 
     /// Enable rendering for the renderer, only needed if you dissabled it using hide
-    pub fn show(&mut self){
+    pub fn show(&mut self) {
         self.visible = true
     }
 
@@ -178,9 +178,7 @@ impl Renderer for PersistentPointRenderer {
         self.pos.disable();
         self.color.disable();
     }
-
 }
-
 
 /// Vertex shader used by the material to display point.
 pub static POINTS_VERTEX_SRC: &'static str = A_VERY_LONG_STRING;

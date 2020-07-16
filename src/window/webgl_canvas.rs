@@ -6,6 +6,7 @@ use std::rc::Rc;
 use std::sync::mpsc::Sender;
 
 use crate::event::{Action, Key, Modifiers, MouseButton, TouchAction, WindowEvent};
+use crate::window::{AbstractCanvas, CanvasSetup};
 use image::{GenericImage, Pixel};
 use stdweb::web::event as webevent;
 use stdweb::web::event::{
@@ -16,7 +17,6 @@ use stdweb::web::{
     IParentNode,
 };
 use stdweb::{unstable::TryInto, Reference};
-use crate::window::{AbstractCanvas, CanvasSetup};
 
 #[derive(Clone, Debug, PartialEq, Eq, ReferenceType)]
 #[reference(instance_of = "Event")] // TODO: Better type check.

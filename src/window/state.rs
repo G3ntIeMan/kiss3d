@@ -1,8 +1,8 @@
 use crate::camera::Camera;
 use crate::planar_camera::PlanarCamera;
 use crate::post_processing::PostProcessingEffect;
-use crate::renderer::{Renderer, PlanarRenderer};
-use crate::window::{Window, CustomWindow};
+use crate::renderer::{PlanarRenderer, Renderer};
+use crate::window::{CustomWindow, Window};
 
 /// Trait implemented by objects describing state of an application.
 ///
@@ -51,14 +51,13 @@ impl State for () {
 ///
 /// Requires custom rendering implementations for both 3D and 2D.
 pub trait ExtendedState: 'static {
-
     /// Method called at each render loop before a rendering.
     fn step(&mut self, window: &mut CustomWindow);
 
     /// Method called at each render loop to retrieve the cameras, custom renderer, and post-processing effect
     /// to be used for the next render.
     fn cameras_and_effect_and_renderers(
-        &mut self
+        &mut self,
     ) -> (
         Option<&mut dyn Camera>,
         Option<&mut dyn PlanarCamera>,

@@ -16,8 +16,8 @@ use gl::{
     types::GLenum as GLenumTy, types::GLintptr as GLintptrTy, types::GLsizeiptr as GLsizeiptrTy,
 };
 
-use na::{Matrix2, Matrix3, Matrix4};
 use crate::resource::GLPrimitive;
+use na::{Matrix2, Matrix3, Matrix4};
 
 #[path = "../error.rs"]
 mod error;

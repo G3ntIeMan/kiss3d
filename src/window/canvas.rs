@@ -1,11 +1,11 @@
 use std::sync::mpsc::Sender;
 
 use crate::event::{Action, Key, MouseButton, WindowEvent};
-use image::{GenericImage, Pixel};
 #[cfg(not(any(target_arch = "wasm32", target_arch = "asmjs")))]
 use crate::window::GLCanvas as CanvasImpl;
 #[cfg(any(target_arch = "wasm32", target_arch = "asmjs"))]
 use crate::window::WebGLCanvas as CanvasImpl;
+use image::{GenericImage, Pixel};
 
 /// The possible number of samples for multisample anti-aliasing.
 #[derive(Debug, Copy, Clone, Serialize, Deserialize, PartialEq, Eq)]

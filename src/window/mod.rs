@@ -4,7 +4,7 @@ pub(crate) use self::canvas::AbstractCanvas;
 pub use self::canvas::{Canvas, CanvasSetup, NumSamples};
 #[cfg(not(any(target_arch = "wasm32", target_arch = "asmjs")))]
 pub use self::gl_canvas::GLCanvas;
-pub use self::state::{State, ExtendedState};
+pub use self::state::{ExtendedState, State};
 #[cfg(any(target_arch = "wasm32", target_arch = "asmjs"))]
 pub use self::webgl_canvas::WebGLCanvas;
 pub use self::window::Window;
