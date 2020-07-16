@@ -4,6 +4,7 @@ use crate::context::Context;
 use na::{Matrix3, Point2, Point3};
 use crate::planar_camera::PlanarCamera;
 use crate::resource::{AllocationType, BufferType, Effect, GPUVec, ShaderAttribute, ShaderUniform};
+use crate::renderer::PlanarRenderer;
 
 #[path = "error.rs"]
 mod error;
@@ -62,10 +63,12 @@ impl PlanarLineRenderer {
             colors.push(color);
         }
     }
+}
 
+impl PlanarRenderer for PlanarLineRenderer {
     /// Actually draws the lines.
-    pub fn render(&mut self, camera: &mut dyn PlanarCamera) {
-        if self.lines.len() == 0 {
+    fn render(&mut self, planar_camera: &mut dyn PlanarCamera) {
+        if !self.needs_rendering() {
             return;
         }
 
@@ -73,7 +76,7 @@ impl PlanarLineRenderer {
         self.pos.enable();
         self.color.enable();
 
-        camera.upload(&mut self.proj, &mut self.view);
+        planar_camera.upload(&mut self.proj, &mut self.view);
 
         self.color.bind_sub_buffer(&mut self.colors, 0, 0);
         self.pos.bind_sub_buffer(&mut self.lines, 0, 0);
