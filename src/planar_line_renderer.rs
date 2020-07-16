@@ -1,10 +1,10 @@
 //! A batched line renderer.
 
 use crate::context::Context;
-use na::{Matrix3, Point2, Point3};
 use crate::planar_camera::PlanarCamera;
-use crate::resource::{AllocationType, BufferType, Effect, GPUVec, ShaderAttribute, ShaderUniform};
 use crate::renderer::PlanarRenderer;
+use crate::resource::{AllocationType, BufferType, Effect, GPUVec, ShaderAttribute, ShaderUniform};
+use na::{Matrix3, Point2, Point3};
 
 #[path = "error.rs"]
 mod error;

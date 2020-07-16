@@ -1,10 +1,10 @@
 use crate::event::{Action, MouseButton, WindowEvent};
-use na::{self, Matrix3, Point2, Translation2, Vector2};
-use num::Pow;
 use crate::planar_camera::PlanarCamera;
 use crate::resource::ShaderUniform;
-use std::f32;
 use crate::window::Canvas;
+use na::{self, Matrix3, Point2, Translation2, Vector2};
+use num::Pow;
+use std::f32;
 
 /// A 2D camera that can be zoomed and panned.
 #[derive(Clone, Debug)]
@@ -66,6 +66,11 @@ impl Sidescroll {
 
         self.update_restrictions();
         self.update_projviews();
+    }
+
+    /// Sets the zoom step of the camera
+    pub fn set_zoom_step(&mut self, zoom_step: f32) {
+        self.zoom_step = zoom_step;
     }
 
     /// Move the camera such that it is centered on a specific point.

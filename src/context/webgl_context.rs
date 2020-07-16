@@ -10,8 +10,8 @@ use crate::context::{AbstractContext, AbstractContextConst, GLenum, GLintptr, GL
 use stdweb::web::{self, html_element::CanvasElement, IParentNode, TypedArray};
 use stdweb::{self, unstable::TryInto, Value};
 
-use na::{Matrix2, Matrix3, Matrix4};
 use crate::resource::{GLPrimitive, PrimitiveArray};
+use na::{Matrix2, Matrix3, Matrix4};
 
 /// A WebGL 1.0 cotnext.
 #[derive(Clone)]
