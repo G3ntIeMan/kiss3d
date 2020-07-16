@@ -26,7 +26,7 @@ use crate::planar_line_renderer::PlanarLineRenderer;
 use crate::post_processing::PostProcessingEffect;
 #[cfg(feature = "conrod")]
 use crate::renderer::ConrodRenderer;
-use crate::renderer::{LineRenderer, PointRenderer, Renderer};
+use crate::renderer::{LineRenderer, PointRenderer, Renderer, PlanarRenderer};
 use crate::resource::{FramebufferManager, Mesh, PlanarMesh, RenderTarget, Texture, TextureManager};
 use crate::scene::{PlanarSceneNode, SceneNode};
 use crate::text::{Font, TextRenderer};
@@ -1124,9 +1124,7 @@ impl Window {
         verify!(ctxt.active_texture(Context::TEXTURE0));
         // Clear the screen to black
 
-        if self.planar_line_renderer.needs_rendering() {
-            self.planar_line_renderer.render(camera);
-        }
+        self.planar_line_renderer.render(camera);
 
         // if self.point_renderer2.needs_rendering() {
         //     self.point_renderer2.render(camera);

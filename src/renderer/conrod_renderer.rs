@@ -7,7 +7,6 @@ use crate::context::{Context, Texture};
 use na::{Point2, Point3, Point4, Vector2};
 use crate::resource::{AllocationType, BufferType, Effect, GPUVec, ShaderAttribute, ShaderUniform};
 use rusttype::gpu_cache::Cache;
-use std::collections::HashMap;
 use std::rc::Rc;
 use crate::text::Font;
 

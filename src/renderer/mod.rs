@@ -4,7 +4,7 @@
 pub use self::conrod_renderer::ConrodRenderer;
 pub use self::line_renderer::LineRenderer;
 pub use self::point_renderer::PointRenderer;
-pub use self::renderer::Renderer;
+pub use self::renderer::{Renderer, PlanarRenderer};
 
 #[cfg(feature = "conrod")]
 mod conrod_renderer;

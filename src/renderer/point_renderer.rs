@@ -20,6 +20,18 @@ pub struct PointRenderer {
     point_size: f32,
 }
 
+/// Persistent version of the PointRenderer
+pub struct PersistentPointRenderer {
+    shader: Effect,
+    pos: ShaderAttribute<Point3<f32>>,
+    color: ShaderAttribute<Point3<f32>>,
+    proj: ShaderUniform<Matrix4<f32>>,
+    view: ShaderUniform<Matrix4<f32>>,
+    points: GPUVec<Point3<f32>>,
+    point_size: f32,
+    visible: bool,
+}
+
 impl PointRenderer {
     /// Creates a new points manager.
     pub fn new() -> PointRenderer {
@@ -46,6 +58,62 @@ impl PointRenderer {
     /// Sets the point size for the rendered points.
     pub fn set_point_size(&mut self, pt_size: f32) {
         self.point_size = pt_size;
+    }
+
+    /// Adds a point to be drawn during the next frame. Points are not persistent between frames.
+    /// This method must be called for each point to draw, and at each update loop iteration.
+    pub fn draw_point(&mut self, pt: Point3<f32>, color: Point3<f32>) {
+        for points in self.points.data_mut().iter_mut() {
+            points.push(pt);
+            points.push(color);
+        }
+    }
+}
+
+impl PersistentPointRenderer {
+    /// Creates a new points manager.
+    pub fn new() -> PersistentPointRenderer {
+        let mut shader = Effect::new_from_str(POINTS_VERTEX_SRC, POINTS_FRAGMENT_SRC);
+
+        shader.use_program();
+
+        PersistentPointRenderer {
+            points: GPUVec::new(Vec::new(), BufferType::Array, AllocationType::StreamDraw),
+            pos: shader.get_attrib::<Point3<f32>>("position").unwrap(),
+            color: shader.get_attrib::<Point3<f32>>("color").unwrap(),
+            proj: shader.get_uniform::<Matrix4<f32>>("proj").unwrap(),
+            view: shader.get_uniform::<Matrix4<f32>>("view").unwrap(),
+            shader,
+            point_size: 1.0,
+            visible: true
+        }
+    }
+
+    /// Indicates whether some points have to be drawn.
+    pub fn needs_rendering(&self) -> bool {
+        self.points.len() != 0 && self.visible
+    }
+
+    /// Sets the point size for the rendered points.
+    pub fn set_point_size(&mut self, pt_size: f32) {
+        self.point_size = pt_size;
+    }
+
+    /// Clear all the points
+    pub fn clear(&mut self) {
+        for points in self.points.data_mut().iter_mut() {
+            points.clear()
+        }
+    }
+
+    /// Prevent this renderer from showing any points
+    pub fn hide(&mut self){
+        self.visible = false
+    }
+
+    /// Enable rendering for the renderer, only needed if you dissabled it using hide
+    pub fn show(&mut self){
+        self.visible = true
     }
 
     /// Adds a point to be drawn during the next frame. Points are not persistent between frames.
@@ -86,6 +154,33 @@ impl Renderer for PointRenderer {
         }
     }
 }
+
+impl Renderer for PersistentPointRenderer {
+    /// Actually draws the points.
+    fn render(&mut self, pass: usize, camera: &mut dyn Camera) {
+        if self.points.len() == 0 {
+            return;
+        }
+
+        self.shader.use_program();
+        self.pos.enable();
+        self.color.enable();
+
+        camera.upload(pass, &mut self.proj, &mut self.view);
+
+        self.color.bind_sub_buffer(&mut self.points, 1, 1);
+        self.pos.bind_sub_buffer(&mut self.points, 1, 0);
+
+        let ctxt = Context::get();
+        verify!(ctxt.point_size(self.point_size));
+        verify!(ctxt.draw_arrays(Context::POINTS, 0, (self.points.len() / 2) as i32));
+
+        self.pos.disable();
+        self.color.disable();
+    }
+
+}
+
 
 /// Vertex shader used by the material to display point.
 pub static POINTS_VERTEX_SRC: &'static str = A_VERY_LONG_STRING;
