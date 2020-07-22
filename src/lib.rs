@@ -122,9 +122,9 @@ Thanks to all the Rustaceans for their help, and their OpenGL bindings.
 
 #![deny(non_camel_case_types)]
 #![deny(unused_parens)]
-#![warn(non_upper_case_globals)] // FIXME: should be denied.
+#![allow(non_upper_case_globals)] // FIXME: should be denied.
 #![deny(unused_qualifications)]
-#![warn(missing_docs)] // FIXME: should be denied.
+#![allow(missing_docs)] // FIXME: should be denied.
 #![warn(unused_results)]
 #![allow(unused_unsafe)] // FIXME: should be denied
 #![allow(missing_copy_implementations)]

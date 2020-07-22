@@ -524,6 +524,14 @@ impl Context {
         self.ctxt
             .blend_func_separate(src_rgb, dst_rgb, src_alpha, dst_alpha)
     }
+
+    pub fn blend_func(
+        &self,
+        sfactor: GLenum,
+        dfactor: GLenum,
+    ) {
+        self.ctxt.blend_func(sfactor, dfactor)
+    }
 }
 
 pub(crate) trait AbstractContextConst {
@@ -765,5 +773,11 @@ pub(crate) trait AbstractContext {
         dst_rgb: GLenum,
         src_alpha: GLenum,
         dst_alpha: GLenum,
+    );
+
+    fn blend_func(
+        &self,
+        sfactor: GLenum,
+        dfactor: GLenum,
     );
 }

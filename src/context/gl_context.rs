@@ -7,8 +7,8 @@ use crate::context::{AbstractContext, AbstractContextConst, GLenum, GLintptr, GL
 use gl;
 use num::Zero;
 
-use crate::resource::GLPrimitive;
 use na::{Matrix2, Matrix3, Matrix4};
+use crate::resource::GLPrimitive;
 
 #[path = "../error.rs"]
 mod error;
@@ -645,5 +645,13 @@ impl AbstractContext for GLContext {
         dst_alpha: GLenum,
     ) {
         unsafe { gl::BlendFuncSeparate(src_rgb, dst_rgb, src_alpha, dst_alpha) }
+    }
+
+    fn blend_func(
+        &self,
+        sfactor: GLenum,
+        dfactor: GLenum,
+    ) {
+        unsafe { gl::BlendFunc(sfactor, dfactor) }
     }
 }
