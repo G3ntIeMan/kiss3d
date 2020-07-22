@@ -614,4 +614,12 @@ impl AbstractContext for WebGLContext {
         self.ctxt
             .blend_func_separate(src_rgb, dst_rgb, src_alpha, dst_alpha)
     }
+
+    pub fn blend_func(
+        &self,
+        sfactor: GLenum,
+        dfactor: GLenum,
+    ) {
+        self.ctxt.blend_func(sfactor, dfactor)
+    }
 }
