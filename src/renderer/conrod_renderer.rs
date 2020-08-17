@@ -246,7 +246,7 @@ impl ConrodRenderer {
 
             if render {
                 let (x, y, w, h) = rect_to_gl_rect(curr_scizzor);
-                ctxt.scissor(x as i32, y as i32, w as i32, h as i32);
+                verify!(ctxt.scissor(x as i32, y as i32, w as i32, h as i32));
                 match mode {
                     RenderMode::Shape => {
                         self.triangle_shader.use_program();
@@ -577,7 +577,7 @@ impl ConrodRenderer {
 
         verify!(ctxt.enable(Context::DEPTH_TEST));
         verify!(ctxt.disable(Context::BLEND));
-        ctxt.scissor(0, 0, width as i32, height as i32);
+        verify!(ctxt.scissor(0, 0, width as i32, height as i32));
     }
 }
 
