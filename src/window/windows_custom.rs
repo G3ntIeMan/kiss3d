@@ -127,6 +127,12 @@ impl CustomWindow {
         }
     }
 
+    /// Retrieve the current rendering mode
+    #[inline]
+    pub fn get_rendering_mode(&self) -> RenderMode {
+        self.rendering_mode
+    }
+
     /// Set window title
     pub fn set_title(&mut self, title: &str) {
         self.canvas.set_title(title)

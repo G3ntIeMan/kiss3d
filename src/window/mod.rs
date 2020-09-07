@@ -9,6 +9,7 @@ pub use self::state::{ExtendedState, State};
 pub use self::webgl_canvas::WebGLCanvas;
 pub use self::window::Window;
 pub use self::windows_custom::CustomWindow;
+pub use self::windows_custom::RenderMode;
 
 mod canvas;
 #[cfg(not(any(target_arch = "wasm32", target_arch = "asmjs")))]
