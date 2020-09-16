@@ -694,33 +694,29 @@ impl CustomWindow {
         let mut planar_camera = planar_camera;
         self.handle_events(&mut camera, &mut planar_camera);
 
-        match (camera, planar_camera) {
-            (Some(cam), Some(cam_planar)) => self.render_single_frame(
-                cam,
-                cam_planar,
-                renderer,
-                planar_renderer,
-                post_processing,
-            ),
-            // TODO: Fallback to basic camera instead of crashing
-            _ => panic!("No cameras available"),
+         // Panic if there is no camera available for the current rendering mode.
+         match self.rendering_mode {
+            RenderMode::ThreeD if camera.is_none() => panic!("No cameras available"),
+            RenderMode::ThreeD => {
+                self.render_3d_frame(camera.unwrap(), renderer, post_processing)
+            }
+            RenderMode::TwoD if planar_camera.is_none() => panic!("No cameras available"),
+            RenderMode::TwoD => {
+                self.render_2d_frame(planar_camera.unwrap(), planar_renderer, post_processing)
+            }
         }
     }
 
-    fn render_single_frame(
+    fn render_3d_frame(
         &mut self,
         camera: &mut dyn Camera,
-        planar_camera: &mut dyn PlanarCamera,
         mut renderer: Option<&mut dyn Renderer>,
-        mut planar_renderer: Option<&mut dyn PlanarRenderer>,
         mut post_processing: Option<&mut dyn PostProcessingEffect>,
     ) -> bool {
         let w = self.width();
         let h = self.height();
 
-        planar_camera.handle_event(&self.canvas, &WindowEvent::FramebufferSize(w, h));
         camera.handle_event(&self.canvas, &WindowEvent::FramebufferSize(w, h));
-        planar_camera.update(&self.canvas);
         camera.update(&self.canvas);
 
         match self.light_mode {
@@ -739,31 +735,86 @@ impl CustomWindow {
 
         self.clear_screen();
 
-        match self.rendering_mode {
-            RenderMode::ThreeD => {
-                // Draw the 3D scene
-                if let Some(ref mut renderer) = renderer {
-                    renderer.render(1usize, camera)
-                }
-            }
-            RenderMode::TwoD => {
-                // Draw the 2D scene
-                if let Some(ref mut renderer) = planar_renderer {
-                    renderer.render(planar_camera);
-                }
-            }
+        // Draw the 3D scene
+        if let Some(ref mut renderer) = renderer {
+            renderer.render(1usize, camera)
         }
-
-        let (znear, zfar) = camera.clip_planes();
 
         if let Some(ref mut p) = post_processing {
             // switch back to the screen framebuffer …
             self.framebuffer_manager
                 .select(&FramebufferManager::screen());
             // … and execute the post-process
+
+            let (znear, zfar) = camera.clip_planes();
             // FIXME: use the real time value instead of 0.016!
             p.update(0.016, w as f32, h as f32, znear, zfar);
             p.draw(&self.post_process_render_target);
+        }
+
+        // TODO: Seperate ui rendering based on viewing mode?
+        self.text_renderer.render(w as f32, h as f32);
+        #[cfg(feature = "conrod")]
+        self.conrod_context.renderer.render(
+            w as f32,
+            h as f32,
+            self.canvas.hidpi_factor() as f32,
+            &self.conrod_context.textures,
+        );
+
+        // We are done: swap buffers
+        self.canvas.swap_buffers();
+
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            // Limit the fps if needed.
+            if let Some(dur) = self.max_dur_per_frame {
+                let elapsed = self.curr_time.elapsed();
+                if elapsed < dur {
+                    thread::sleep(dur - elapsed);
+                }
+            }
+
+            self.curr_time = Instant::now();
+        }
+
+        // self.transparent_objects.clear();
+        // self.opaque_objects.clear();
+
+        !self.should_close()
+    }
+
+    fn render_2d_frame(
+        &mut self,
+        planar_camera: &mut dyn PlanarCamera,
+        mut planar_renderer: Option<&mut dyn PlanarRenderer>,
+        mut post_processing: Option<&mut dyn PostProcessingEffect>,
+    ) -> bool {
+        let w = self.width();
+        let h = self.height();
+
+        planar_camera.handle_event(&self.canvas, &WindowEvent::FramebufferSize(w, h));
+        planar_camera.update(&self.canvas);
+
+        match self.light_mode {
+            Light::StickToCamera => self.set_light(Light::StickToCamera),
+            _ => {}
+        }
+
+        if post_processing.is_some() {
+            // if we need post-processing, render to our own frame buffer
+            self.framebuffer_manager
+                .select(&self.post_process_render_target);
+        } else {
+            self.framebuffer_manager
+                .select(&FramebufferManager::screen());
+        }
+
+        self.clear_screen();
+
+        // Draw the 2D scene
+        if let Some(ref mut renderer) = planar_renderer {
+            renderer.render(planar_camera);
         }
 
         // TODO: Seperate ui rendering based on viewing mode?
