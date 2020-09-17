@@ -788,7 +788,7 @@ impl CustomWindow {
         &mut self,
         planar_camera: &mut dyn PlanarCamera,
         mut planar_renderer: Option<&mut dyn PlanarRenderer>,
-        mut post_processing: Option<&mut dyn PostProcessingEffect>,
+        post_processing: Option<&mut dyn PostProcessingEffect>,
     ) -> bool {
         let w = self.width();
         let h = self.height();
