@@ -1,7 +1,8 @@
 extern crate kiss3d;
 extern crate nalgebra as na;
 
-use kiss3d::camera::Camera;
+use kiss3d::renderer::PlanarRenderer;
+use kiss3d::camera::{Camera, ArcBall};
 use kiss3d::context::Context;
 use kiss3d::planar_camera::PlanarCamera;
 use kiss3d::post_processing::PostProcessingEffect;
@@ -10,7 +11,7 @@ use kiss3d::resource::{
     AllocationType, BufferType, Effect, GPUVec, ShaderAttribute, ShaderUniform,
 };
 use kiss3d::text::Font;
-use kiss3d::window::{State, Window};
+use kiss3d::window::{ExtendedState, CustomWindow};
 use na::{Matrix4, Point2, Point3, Vector3};
 
 // Custom renderers are used to allow rendering objects that are not necessarily
@@ -22,24 +23,12 @@ use na::{Matrix4, Point2, Point3, Vector3};
 // like other examples.
 
 struct AppState {
+    camera: ArcBall,
     point_cloud_renderer: PointCloudRenderer,
 }
 
-impl State for AppState {
-    // Return the custom renderer that will be called at each
-    // render loop.
-    fn cameras_and_effect_and_renderer(
-        &mut self,
-    ) -> (
-        Option<&mut dyn Camera>,
-        Option<&mut dyn PlanarCamera>,
-        Option<&mut dyn Renderer>,
-        Option<&mut dyn PostProcessingEffect>,
-    ) {
-        (None, None, Some(&mut self.point_cloud_renderer), None)
-    }
-
-    fn step(&mut self, window: &mut Window) {
+impl ExtendedState for AppState {
+    fn step(&mut self, window: &mut CustomWindow) {
         if self.point_cloud_renderer.num_points() < 1_000_000 {
             // Add some random points to the point cloud.
             for _ in 0..1_000 {
@@ -61,11 +50,24 @@ impl State for AppState {
             &Point3::new(1.0, 1.0, 1.0),
         );
     }
+
+    fn cameras_and_effect_and_renderers(
+        &mut self,
+    ) -> (
+        Option<&mut dyn Camera>,
+        Option<&mut dyn PlanarCamera>,
+        Option<&mut dyn Renderer>,
+        Option<&mut dyn PlanarRenderer>,
+        Option<&mut dyn PostProcessingEffect>,
+    ) {
+        (Some(&mut self.camera), None, Some(&mut self.point_cloud_renderer), None, None)
+    }
 }
 
 fn main() {
-    let window = Window::new("Kiss3d: persistent_point_cloud");
+    let window = CustomWindow::new("Kiss3d: persistent_point_cloud");
     let app = AppState {
+        camera: ArcBall::new(na::Point3::new(1.0f32, 0.0, 0.0), na::Point3::new(0.0f32, 0.0, 0.0)),
         point_cloud_renderer: PointCloudRenderer::new(4.0),
     };
 
