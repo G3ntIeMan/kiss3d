@@ -68,6 +68,11 @@ impl Sidescroll {
         self.update_projviews();
     }
 
+    /// Get the zoom step for the camera
+    pub fn zoom_step(&self) -> f32 {
+        self.zoom_step
+    }
+
     /// Sets the zoom step of the camera
     pub fn set_zoom_step(&mut self, zoom_step: f32) {
         self.zoom_step = zoom_step;
