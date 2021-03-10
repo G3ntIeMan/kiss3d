@@ -137,16 +137,6 @@ impl ArcBall {
         self.update_projviews();
     }
 
-    /// Get the distance step
-    pub fn dist_step(&self) -> f32 {
-        self.dist_step
-    }
-
-    /// Set the distance step
-    pub fn set_dist_step(&mut self, step: f32) {
-        self.dist_step = step;
-    }
-
     /// The minimum pitch of the camera.
     pub fn min_pitch(&self) -> f32 {
         self.min_pitch
@@ -198,6 +188,11 @@ impl ArcBall {
     /// Set the maximum distance from the camera position to its view point.
     pub fn set_max_dist(&mut self, max_dist: f32) {
         self.max_dist = max_dist;
+    }
+
+    /// Get the distance step
+    pub fn dist_step(&self) -> f32 {
+        self.dist_step
     }
 
     /// Set the increment for a unit scroll (default at 40).

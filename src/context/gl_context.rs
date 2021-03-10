@@ -656,6 +656,7 @@ impl AbstractContext for GLContext {
         sfactor: GLenum,
         dfactor: GLenum,
     ) {
-        unsafe { gl::BlendFunc(sfactor, dfactor) }
+        // TODO(gijs) : Is this really needed
+        // unsafe { gl::BlendFunc(sfactor, dfactor) }
     }
 }
