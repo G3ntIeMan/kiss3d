@@ -32,9 +32,10 @@ impl ExtendedState for AppState {
         if self.point_cloud_renderer.num_points() < 1_000_000 {
             // Add some random points to the point cloud.
             for _ in 0..1_000 {
-                let random: Point3<f32> = rand::random();
+                let (x, y, z): (f32, f32, f32) = rand::random();
+                let point = Point3::<f32>::new(x, y, z);
                 self.point_cloud_renderer
-                    .push((random - Vector3::repeat(0.5)) * 0.5, rand::random());
+                    .push((point - Vector3::repeat(0.5)) * 0.5, point);
             }
         }
 
